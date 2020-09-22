@@ -94,7 +94,7 @@ namespace EntityFrameworkCore.Generator.Templates
 
                 CodeBuilder.AppendLine($"public const string Name = \"{_entity.TableName}\";");
             }
-            
+
             CodeBuilder.AppendLine("}");
 
             CodeBuilder.AppendLine();
@@ -304,8 +304,12 @@ namespace EntityFrameworkCore.Generator.Templates
             var keys = _entity.Properties.Where(p => p.IsPrimaryKey == true).ToList();
             if (keys.Count == 0)
             {
-                CodeBuilder.AppendLine("builder.HasNoKey();");
-                CodeBuilder.AppendLine();
+                if (!_entity.IsView) // 20200922 SRG si es vista no mostrar HasNoKey
+                {
+
+                    CodeBuilder.AppendLine("builder.HasNoKey();");
+                    CodeBuilder.AppendLine();
+                }
 
                 return;
             }
